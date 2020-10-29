@@ -19,14 +19,41 @@ void AMyActor::BeginPlay()
 	Super::BeginPlay();
     UE_LOG(LogTemp,Display,TEXT("hello"));
     StartUDPReceiver();
-
-	
 }
 
 // Called every frame
 void AMyActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (ListenSocket == nullptr) return;
+
+	uint32 PendingData = 0;
+    uint8 attysdata[0x10000];
+
+	ListenSocket->HasPendingData(PendingData);
+
+	if (PendingData > 0)
+	{
+
+		int32 BytesRead;
+		int nSamples = 0;
+
+		do {
+			ListenSocket->Recv(attysdata, PendingData, BytesRead);
+			nSamples++;
+
+
+			ListenSocket->HasPendingData(PendingData);
+
+		} while (PendingData > 0);
+
+        UE_LOG(LogTemp,Display,TEXT("attysdata %d"),attysdata[0]);
+
+
+	}
+
+
 
 }
 
