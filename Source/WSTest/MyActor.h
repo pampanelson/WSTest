@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Networking.h"
-
+#include "Runtime/Online/HTTP/Public/Http.h" // include for http request
 #include "MyActor.generated.h"
 
 UCLASS()
@@ -29,4 +29,7 @@ public:
     virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 
+
+	void SendHttpRequest(const FString& Url, const FString& RequestContent);
+	void OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
 };
