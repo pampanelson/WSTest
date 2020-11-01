@@ -30,6 +30,9 @@ public:
 
 
 
-	void SendHttpRequest(const FString& Url, const FString& RequestContent);
+	void SendHttpRequest(const FString& Url, const FString& RequestContent);	
 	void OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
+
+	void SendHttpJsonRequest(const FString& Url);
+	void OnJsonResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
 };

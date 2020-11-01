@@ -20,7 +20,7 @@ void AMyActor::BeginPlay()
     UE_LOG(LogTemp,Display,TEXT("hello"));
     StartUDPReceiver();
 
-    SendHttpRequest(FString("https://reqbin.com/echo/get/json"),NULL);
+    SendHttpJsonRequest(FString("https://reqbin.com/echo/get/json"));
 }
 
 // Called every frame
@@ -136,3 +136,54 @@ void AMyActor::SendHttpRequest(const FString& Url, const FString& RequestContent
 	//Send the request
 	Request->ProcessRequest();
 }
+
+
+void AMyActor::SendHttpJsonRequest(const FString& Url)
+{
+	TSharedRef<IHttpRequest> Request = FHttpModule::Get().CreateRequest();;
+	Request->OnProcessRequestComplete().BindUObject(this, &AMyActor::OnJsonResponseReceived);
+	//This is the url on which to process the request
+	Request->SetURL(Url);
+	Request->SetVerb("GET");
+	Request->SetHeader(TEXT("User-Agent"), "X-UnrealEngine-Agent");
+	Request->SetHeader("Content-Type", TEXT("application/json"));
+	Request->ProcessRequest();
+}
+
+
+void AMyActor::OnJsonResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
+{
+	if(bWasSuccessful)
+	{
+		GLog->Log("Hey we received the following response!");
+		GLog->Log(Response->GetContentAsString());
+
+        UE_LOG(LogTemp,Display,TEXT("got a http json reply"));
+
+		
+
+
+
+			//Create a pointer to hold the json serialized data
+		TSharedPtr<FJsonObject> JsonObject;
+
+		//Create a reader pointer to read the json data
+		TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
+
+		//Deserialize the json data given Reader and the actual object to deserialize
+		if (FJsonSerializer::Deserialize(Reader, JsonObject))
+		{
+			//Get the value of the json object by field name
+			// int32 recievedInt = JsonObject->GetIntegerField("customInt");
+
+			//Output it to the engine
+			// GEngine->AddOnScreenDebugMessage(1, 2.0f, FColor::Green, FString::FromInt(recievedInt));
+		}
+
+
+
+
+
+	}
+}
+
