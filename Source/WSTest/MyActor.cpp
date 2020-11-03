@@ -61,7 +61,7 @@ void AMyActor::Tick(float DeltaTime)
 
         FString TestHUDString = FString(TEXT("Buy this crap!你好"));
 
-
+	// UE_LOG(LogTemp,Display,TEXT("tick"));
 }
 
 void AMyActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
